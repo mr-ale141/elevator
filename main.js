@@ -3,11 +3,12 @@ const path = require('node:path')
 const { spawn } = require('child_process')
 
 let elevatorServer = null;
-let response = null;
+let height = null;
 
 const createServer = () => {
-    elevatorServer = spawn('powershell.exe', [
-        path.join(__dirname, 'server/start_server.ps1')
+    elevatorServer = spawn('server/elevation_server.exe', [
+        '-dem',
+        path.join(__dirname, 'server/dem_tiles')
     ])
 
     elevatorServer.stdout.on("data",function(data){
@@ -26,7 +27,6 @@ const createServer = () => {
 }
 
 const createWindow = () => {
-
     createServer();
 
     const mainWindow = new BrowserWindow({
@@ -40,13 +40,13 @@ const createWindow = () => {
     ipcMain.on('set-request', (event, coordinates) => {
         const request = spawn('powershell.exe', [
             path.join(__dirname, 'server/request.ps1'),
-            `${coordinates.lat}`,
-            `${coordinates.lang}`
+            `${coordinates.latitude}`,
+            `${coordinates.longitude}`
         ])
 
         request.stdout.on("data",function(data){
             console.log("Request Script Data: " + data)
-            response = Number(data)
+            height = Number(data)
         })
 
         request.stderr.on("data",function(data){
@@ -60,9 +60,7 @@ const createWindow = () => {
         request.stdin.end()
     })
 
-    ipcMain.handle('get-response', async () => {
-        return response
-    })
+    ipcMain.handle('get-response', async () => height)
 
     mainWindow.loadFile('./public/index.html').then()
 }
@@ -77,7 +75,7 @@ app.on('ready', () => {
 
 app.on('window-all-closed', () => {
 
-    elevatorServer.emit('close');
+    elevatorServer.kill('SIGINT')
 
     if (process.platform !== 'darwin') {
         app.quit()
