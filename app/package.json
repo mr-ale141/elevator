@@ -6,7 +6,9 @@
   "homepage": "./",
   "scripts": {
     "test": "test",
-    "build": "react-scripts build"
+    "bundle": "react-scripts build",
+    "copy": "@powershell copy -Force -r './build/static' ../resources && @powershell copy -Force './build/*.*' ../resources",
+    "build": "npm run bundle && npm run copy"
   },
   "repository": {
     "type": "git",
