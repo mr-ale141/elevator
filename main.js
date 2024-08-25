@@ -1,8 +1,9 @@
-const { app, BrowserWindow } = require('electron')
+const { app, BrowserWindow, ipcMain } = require('electron')
 const path = require('node:path')
 const { spawn } = require('child_process')
 
-let elevatorServer;
+let elevatorServer = null;
+let response = null;
 
 const createServer = () => {
     elevatorServer = spawn('powershell.exe', [path.join(__dirname, 'server/start_server.ps1')])
@@ -26,7 +27,7 @@ const createWindow = () => {
 
     createServer();
 
-    const win = new BrowserWindow({
+    const mainWindow = new BrowserWindow({
         width: 800,
         height: 600,
         webPreferences: {
@@ -34,7 +35,15 @@ const createWindow = () => {
         }
     })
 
-    win.loadFile('./public/index.html').then()
+    ipcMain.on('set-request', (event, coordinates) => {
+        const request = spawn('powershell.exe', [path.join(__dirname, 'server/start_server.ps1')])
+    })
+
+    ipcMain.handle('get-response', async () => {
+        return response
+    })
+
+    mainWindow.loadFile('./public/index.html').then()
 }
 
 app.on('ready', () => {
