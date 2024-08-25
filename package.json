@@ -1,0 +1,32 @@
+{
+  "name": "elevator_ui",
+  "version": "1.0.0",
+  "description": "Plotting heights above sea level",
+  "main": "main.js",
+  "scripts": {
+    "test": "test",
+    "start": "electron ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mr-ale141/elevator/ui"
+  },
+  "keywords": [
+    "elevator"
+  ],
+  "author": "mr-ale141",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "electron": "^32.0.1",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-redux": "^9.1.2",
+    "redux": "^5.0.1",
+    "redux-thunk": "^3.1.0"
+  },
+  "devDependencies": {
+    "electron-devtools-installer": "^3.2.0",
+    "electron-rebuild": "^3.2.9"
+  }
+}
