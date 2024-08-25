@@ -6,21 +6,23 @@ let elevatorServer = null;
 let response = null;
 
 const createServer = () => {
-    elevatorServer = spawn('powershell.exe', [path.join(__dirname, 'server/start_server.ps1')])
+    elevatorServer = spawn('powershell.exe', [
+        path.join(__dirname, 'server/start_server.ps1')
+    ])
 
     elevatorServer.stdout.on("data",function(data){
-        console.log("Powershell Data: " + data);
-    });
+        console.log("ElevatorServer Data: " + data)
+    })
 
     elevatorServer.stderr.on("data",function(data){
-        console.log("Powershell Errors: " + data);
-    });
+        console.log("ElevatorServer Errors: " + data)
+    })
 
     elevatorServer.on("exit",function(){
-        console.log("Powershell Script finished");
-    });
+        console.log("ElevatorServer Script finished")
+    })
 
-    elevatorServer.stdin.end();
+    elevatorServer.stdin.end()
 }
 
 const createWindow = () => {
@@ -36,7 +38,26 @@ const createWindow = () => {
     })
 
     ipcMain.on('set-request', (event, coordinates) => {
-        const request = spawn('powershell.exe', [path.join(__dirname, 'server/start_server.ps1')])
+        const request = spawn('powershell.exe', [
+            path.join(__dirname, 'server/request.ps1'),
+            `${coordinates.lat}`,
+            `${coordinates.lang}`
+        ])
+
+        request.stdout.on("data",function(data){
+            console.log("Request Script Data: " + data)
+            response = Number(data)
+        })
+
+        request.stderr.on("data",function(data){
+            console.log("Request Script Errors: " + data)
+        })
+
+        request.on("exit",function(){
+            console.log("Request Script finished")
+        })
+
+        request.stdin.end()
     })
 
     ipcMain.handle('get-response', async () => {
