@@ -4,9 +4,27 @@ const { spawn } = require('child_process')
 
 let elevatorServer;
 
+const createServer = () => {
+    elevatorServer = spawn('powershell.exe', [path.join(__dirname, 'server/start_server.ps1')])
+
+    elevatorServer.stdout.on("data",function(data){
+        console.log("Powershell Data: " + data);
+    });
+
+    elevatorServer.stderr.on("data",function(data){
+        console.log("Powershell Errors: " + data);
+    });
+
+    elevatorServer.on("exit",function(){
+        console.log("Powershell Script finished");
+    });
+
+    elevatorServer.stdin.end();
+}
+
 const createWindow = () => {
 
-    elevatorServer = spawn('powershell.exe', )
+    createServer();
 
     const win = new BrowserWindow({
         width: 800,
@@ -14,10 +32,10 @@ const createWindow = () => {
         webPreferences: {
             preload: path.join(__dirname, 'preload.js')
         }
-    });
+    })
 
     win.loadFile('./public/index.html').then()
-};
+}
 
 app.on('ready', () => {
     createWindow()
@@ -28,6 +46,9 @@ app.on('ready', () => {
 })
 
 app.on('window-all-closed', () => {
+
+    elevatorServer.emit('close');
+
     if (process.platform !== 'darwin') {
         app.quit()
     }
