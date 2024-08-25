@@ -62,7 +62,7 @@ const createWindow = () => {
 
     ipcMain.handle('get-response', async () => height)
 
-    mainWindow.loadFile('./public/index.html').then()
+    mainWindow.loadFile('./resources/index.html').then()
 }
 
 app.on('ready', () => {
