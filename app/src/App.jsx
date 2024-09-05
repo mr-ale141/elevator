@@ -1,11 +1,21 @@
 import React from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { setLatitude, setLongitude, setHeight } from "./store";
+import {
+    setX,
+    setY,
+    setN,
+    setLatitude,
+    setLongitude,
+    setHeight,
+    updateGeographicalCoordinates,
+    updateFlatCoordinates,
+} from "./store";
 
 export default function App() {
     const dispatch = useDispatch()
-    const { height, coordinates } = useSelector(state => state)
-    const { latitude, longitude } = coordinates
+    const { height, geographicalCoordinates, flatCoordinates } = useSelector(state => state)
+    const { latitude, longitude } = geographicalCoordinates
+    const { x, y, n } = flatCoordinates
 
     const handlerButton = () => {
         window.electronAPI.setRequest({ latitude, longitude })
@@ -17,17 +27,56 @@ export default function App() {
         }, 500)
     }
 
+    const handlerChangeX = (e) => {
+        dispatch(setX(Number(e.target.value)))
+        dispatch(updateGeographicalCoordinates())
+    }
+
+    const handlerChangeY = (e) => {
+        dispatch(setY(Number(e.target.value)))
+        dispatch(updateGeographicalCoordinates())
+    }
+
+    const handlerChangeN = (e) => {
+        dispatch(setN(Number(e.target.value)))
+        dispatch(updateGeographicalCoordinates())
+    }
+
     const handlerChangeLatitude = (e) => {
-        dispatch(setLatitude(e.target.value))
+        dispatch(setLatitude(Number(e.target.value)))
+        dispatch(updateFlatCoordinates())
     }
 
     const handlerChangeLongitude = (e) => {
-        dispatch(setLongitude(e.target.value))
+        dispatch(setLongitude(Number(e.target.value)))
+        dispatch(updateFlatCoordinates())
     }
 
     return (
         <div>
-            <h3>Координаты</h3>
+            <h3>Плоские прямоугольные координаты</h3>
+            <label htmlFor="x">X</label>
+            <input
+                type="number"
+                id="x"
+                value={x}
+                onChange={(e) => handlerChangeX(e)}
+            />
+            <label htmlFor="y">Y</label>
+            <input
+                type="number"
+                id="y"
+                value={y}
+                onChange={(e) => handlerChangeY(e)}
+            />
+            <label htmlFor="n">Zone</label>
+            <input
+                type="number"
+                id="n"
+                value={n}
+                onChange={(e) => handlerChangeN(e)}
+            />
+            <h3>Географические координаты</h3>
             <label htmlFor="latitude">Широта</label>
             <input
                 type="number"
