@@ -29,21 +29,18 @@ const slice = createSlice({
             const L = state.geographicalCoordinates.longitude
             const nz = Math.floor((6 + L) / 6)
             const l = (L - (3 + 6 * (nz - 1))) / 57.29577951
-            state.flatCoordinates.x =
-                6367558.4968 * B -
-                Math.sin(2 * B) * (16002.89 + 66.9607 * Math.sin(B) ** 2 + 0.3515 * Math.sin(B) ** 4) +
-                l ** 2 * Math.sin(2 * B) * (1594561.25 + 5336.535 * Math.sin(B) ** 2 + 26.790 * Math.sin(B) ** 4 + 0.149 * Math.sin(B) ** 6) +
-                l ** 4 * Math.sin(2 * B) * (672483.4 - 811219 * Math.sin(B) ** 2 + 5420.0 * Math.sin(B) ** 4 - 16010 * Math.sin(B) ** 6) +
-                l ** 8 * Math.sin(2 * B) * (109500 - 574700 * Math.sin(B) ** 2 + 863700 * Math.sin(B) ** 4 - 398600 * Math.sin(B) ** 6)
-            state.flatCoordinates.y =
-                (5 + 10 * nz) * 10 ** 5 +
-                l * Math.cos(B) * (6378245 + 21346.1415 * Math.sin(B) ** 2 + 107.159 * Math.sin(B) ** 4 + 0.5977 * Math.sin(B) ** 6) +
-                l ** 3 * Math.cos(B) * (1070204.16 - 2136526.66 * Math.sin(B) ** 2 + 17.98 * Math.sin(B) ** 4 - 11.99 * Math.sin(B) ** 6) +
-                l ** 5 * Math.cos(B) * (270806 - 1523417 * Math.sin(B) ** 2 + 1327645 * Math.sin(B) ** 4 - 21701 * Math.sin(B) ** 6) +
-                l ** 7 * Math.cos(B) * (79690 - 866190 * Math.sin(B) ** 2 + 1730360 * Math.sin(B) ** 4 - 945460 * Math.sin(B) ** 6)
+            state.flatCoordinates.x = 6367558.4968 * B - Math.sin(2*B)*(16002.8900 + 66.9607 * Math.sin(B)**2 + 0.3515 * Math.sin(B)**4 -
+                l**2*(1594561.25 + 5336.535 * Math.sin(B)**2 + 26.790 * Math.sin(B)**4 + 0.149 * Math.sin(B)**6 +
+                l**2*(672483.4 - 811219.9 * Math.sin(B)**2 + 5420.0 * Math.sin(B)**4 - 10.6 * Math.sin(B)**6 +
+                l**2*(278194.0 - 830174.0 * Math.sin(B)**2 + 572434.0 * Math.sin(B)**4 - 16010.0 * Math.sin(B)**6 +
+                l**2*(109500.0 - 574700.0 * Math.sin(B)**2 + 863700.0 * Math.sin(B)**4 - 398600.0 * Math.sin(B)**6)))))
+            state.flatCoordinates.y = (5 + 10 * nz) * 100000.0 + l * Math.cos(B) * (6378245.0 + 21346.1415 * Math.sin(B)**2 + 107.1590 * Math.sin(B)**4 + 0.5977 * Math.sin(B)**6 +
+                l**2*(1070204.16 - 2136826.66 * Math.sin(B)**2 + 17.98 * Math.sin(B)**4 - 11.99 * Math.sin(B)**6 +
+                l**2*(270806.0 - 1523417.0 * Math.sin(B)**2 + 1327645.0 * Math.sin(B)**4 - 21701.0 * Math.sin(B)**6 +
+                l**2*(79690.0 - 866190.0 * Math.sin(B)**2 + 1730360.0 * Math.sin(B)**4 - 945460.0 * Math.sin(B)**6))))
             state.flatCoordinates.n = nz
         },
-        updateGeographicalCoordinates: (state) => {},
+        updateGeographicalCoordinates: () => {},
         setLatitude: (state, action) => {
             state.geographicalCoordinates.latitude = action.payload
         },
